@@ -4,16 +4,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Power {
+public class Power implements Runnable{
     ReentrantLock lock = new ReentrantLock();
     Condition condition = lock.newCondition();
 //
 
     public void powerCount() {
+        lock.lock();
         while (true) {
             try {
                 for (; Cat.power > 0; Cat.power--) {
-                    Thread.sleep(150);
+                    Thread.sleep(110);
                     System.out.println("Left power percent: " + Cat.power);
                 }
             } catch (InterruptedException e) {
@@ -36,11 +37,12 @@ public class Power {
         while (true) {
             try {
                 lock.lock();
-                System.out.println("Power sending!");
+
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter power code!");
                 String code = scanner.nextLine();
                 if (code.equalsIgnoreCase("333")) {
+                    System.out.println("Power sending!");
                     for (; Cat.power < 100; Cat.power++) {
                         Thread.sleep(130);
                     }
@@ -57,7 +59,27 @@ public class Power {
     };
 
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
+//        Power power = new Power();
+//        ExecutorService service = Executors.newFixedThreadPool(2);
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                power.powerCount();
+//            }
+//        });
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                power.sendPower();
+//            }
+//        });
+//    }
+
+    @Override
+    public void run() {
         Power power = new Power();
         ExecutorService service = Executors.newFixedThreadPool(2);
 
@@ -75,5 +97,4 @@ public class Power {
             }
         });
     }
-
 }

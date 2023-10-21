@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Cat {
+public class Cat implements Runnable{
     public static int food = 100;
     public static int sleep = 100;
     public static int power = 100;
@@ -19,10 +19,11 @@ public class Cat {
 
 
     public void foodCount() {
+        lock.lock();
         while (true) {
             try {
                 for (; food > 0; food--) {
-                    Thread.sleep(150);
+                    Thread.sleep(200);
                     System.out.println("Left food percent: " + food);
                 }
             } catch (InterruptedException e) {
@@ -46,11 +47,12 @@ public class Cat {
         while (true) {
             try {
                 lock.lock();
-                System.out.print("Foods sending!");
+
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("Enter food code!\n");
                 String code = scanner.nextLine();
                 if (code.equalsIgnoreCase("111")) {
+                    System.out.print("Foods sending!");
                     for (; food < 100; food++) {
                         Thread.sleep(130);
                     }
@@ -67,7 +69,28 @@ public class Cat {
     };
 
 
-    public static void main(String[] args) {
+ //   public static void main(String[] args) {
+//
+//        Cat cat = new Cat();
+//        ExecutorService service = Executors.newFixedThreadPool(2);
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                cat.foodCount();
+//            }
+//        });
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                cat.sendFood();
+//            }
+//        });
+//   }
+
+    @Override
+    public void run() {
 
         Cat cat = new Cat();
         ExecutorService service = Executors.newFixedThreadPool(2);
@@ -86,5 +109,4 @@ public class Cat {
             }
         });
     }
-
 }

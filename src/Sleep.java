@@ -4,7 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Sleep {
+public class Sleep implements Runnable{
 
 
     ReentrantLock lock = new ReentrantLock();
@@ -14,6 +14,7 @@ public class Sleep {
 //
 
     public void sleepCount() {
+        lock.lock();
         while (true) {
             try {
                 for (; Cat.sleep > 0; Cat.sleep--) {
@@ -40,11 +41,12 @@ public class Sleep {
         while (true) {
             try {
                 lock.lock();
-                System.out.println("Sleep sending!");
+
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter sleeo code!");
                 String code = scanner.nextLine();
                 if (code.equalsIgnoreCase("222")) {
+                    System.out.println("Sleep sending!");
                     for (; Cat.sleep < 100; Cat.sleep++) {
                         Thread.sleep(130);
                     }
@@ -61,7 +63,27 @@ public class Sleep {
     };
 
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
+//        Sleep sleep = new Sleep();
+//        ExecutorService service = Executors.newFixedThreadPool(2);
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                sleep.sleepCount();
+//            }
+//        });
+//
+//        service.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                sleep.sendsleep();
+//            }
+//        });
+//    }
+
+    @Override
+    public void run() {
         Sleep sleep = new Sleep();
         ExecutorService service = Executors.newFixedThreadPool(2);
 
@@ -79,5 +101,4 @@ public class Sleep {
             }
         });
     }
-
 }
